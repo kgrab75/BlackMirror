@@ -1,0 +1,181 @@
+<head>
+    <title>Black Mirror</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+<div class="container shops">
+    <header>
+        <h1>Courses</h1>
+
+        <form class="new-shop mobile-only">
+            <input type="text" name="text" placeholder=" + Nouvelle course" />
+        </form>
+
+    </header>
+
+    <ul>
+        {{#if noShops}}
+            <li>
+                <span class="text">Aucune course à faire</span>
+            </li>
+        {{/if}}
+
+        {{#each shops}}
+            {{> shop}}
+        {{/each}}
+
+        {{#if tooManyShops}}
+            <li>
+                <span class="text">...</span>
+            </li>
+        {{/if}}
+    </ul>
+</div>
+
+<div class="container events">
+    <header>
+        <h1>Calendrier</h1>
+
+        <button class="toggle-new-event mobile-only">+ Nouvel événement</button>
+
+        <form class="new-event hide mobile-only">
+            <label>Titre</label>
+            <input type="text" name="title" placeholder="Titre" />
+
+            <label>Lieu</label>
+            <input type="text" name="place" placeholder="Lieu" />
+
+            <label>Date</label>
+            <select class="day" name="day">
+                {{#each days}}
+                    {{> day}}
+                {{/each}}
+            </select>
+            <select class="month" name="month">
+                {{#each months}}
+                    {{> month}}
+                {{/each}}
+            </select>
+            <select class="year" name="year">
+                {{#each years}}
+                    {{> year}}
+                {{/each}}
+            </select>
+
+            <div class="start-time">
+                <label>Heure de début</label>
+                <select class="starthour" name="starthour">
+                    {{#each hours}}
+                        {{> hour}}
+                    {{/each}}
+                </select>
+                <span class="hour-separator">:</span>
+                <select class="startmin" name="startmin">
+                    {{#each mins}}
+                        {{> min}}
+                    {{/each}}
+                </select>
+            </div>
+
+            <div class="end-time">
+                <label>Heure de fin</label>
+                <select class="endhour" name="endhour">
+                    {{#each hours}}
+                        {{> hour}}
+                    {{/each}}
+                </select>
+                <span class="hour-separator">:</span>
+                <select class="endmin" name="endmin">
+                    {{#each mins}}
+                        {{> min}}
+                    {{/each}}
+                </select>
+            </div>
+
+
+            <label>Fréquence</label>
+            <select name="frequency">
+                <option value="1">Une fois</option>
+                <option value="2">Tous les jours</option>
+                <option value="3">Tous les jours ouvrables</option>
+                <option value="4">Chaque {{weekdayChange}}</option>
+                <option value="5">Le {{dayChange}} de chaqe mois</option>
+                <option value="6">Chaque {{dayChange}} {{monthChange}}</option>
+            </select>
+
+            <input type="submit"/>
+
+        </form>
+
+    </header>
+    <ul>
+        {{#if noEvents}}
+            <li>
+                <span class="text">Aucun événement à venir</span>
+            </li>
+        {{/if}}
+        {{#each events}}
+            {{> event}}
+        {{/each}}
+        {{#if tooManyEvents}}
+            <li>
+                <span class="text">...</span>
+            </li>
+        {{/if}}
+    </ul>
+</div>
+
+</body>
+
+<template name="shop">
+    <li class="{{#if checked}}checked{{/if}}">
+        <button class="delete mobile-only">&times;</button>
+
+        <input type="checkbox" checked="{{checked}}" class="toggle-checked  mobile-only" />
+
+        <span class="text">{{text}}</span>
+    </li>
+</template>
+
+<template name="event">
+    <li class="{{#unless new_date}}event-group{{/unless}}" >
+        <button class="delete mobile-only">&times;</button>
+
+        {{#if new_date}}<span class="date">{{dateText}}</span>{{/if}}
+        <div class="event">
+            <div class="row1">
+                <div class="starttime">{{startHourText}}</div>
+                <div class="title">{{title}}</div>
+            </div>
+
+            <div class="row2">
+                <div class="endtime">{{endHourText}}</div>
+                <div class="place">{{place}}</div>
+            </div>
+        </div>
+
+    </li>
+</template>
+
+<template name="day">
+    <option value="{{value}}">{{day}}</option>
+</template>
+
+<template name="month">
+    <option value="{{value}}">{{month}}</option>
+</template>
+
+<template name="year">
+    <option value="{{value}}">{{year}}</option>
+</template>
+
+<template name="hour">
+    <option value="{{value}}">{{hour}}</option>
+</template>
+
+<template name="min">
+    <option value="{{value}}">{{min}}</option>
+</template>
