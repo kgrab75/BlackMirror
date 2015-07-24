@@ -28,6 +28,19 @@ aMonth = [
 ];
 
 if (Meteor.isClient) {
+
+    date = new Date();
+    curDate  = new Date( new Date().setHours(0, 0, 0, 0) );
+    //curDate  = new Date(date.getTime() - (100 * 24 * 60 * 60 * 1000));
+    curDateTemp  = new Date( new Date().setHours(0, 0, 0, 0) );
+    endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 7) );
+
+    setInterval(function(){
+        if(new Date( new Date().setHours(0, 0, 0, 0) ).getTime() != curDate.getTime()){
+            location.reload();
+        }
+    }, 60000);
+
     // This code only runs on the client
     Template.body.helpers({
         shops: function () {
@@ -42,15 +55,17 @@ if (Meteor.isClient) {
             return Shops.find().count() == 0;
         },
 
-        events: function () {
+        /*events: function () {
             var lastEvent = null;
             return Events.find({}, {sort: {startDateTime: 1}, transform: function (eventItem) {
 
+                console.groupCollapsed('main');
                 console.log('eventItem');
                 console.log(eventItem);
 
                 console.log('lastEvent');
                 console.log(lastEvent);
+                console.groupEnd();
 
                 if (!lastEvent || (lastEvent.getDate() != eventItem.startDateTime.getDate() || lastEvent.getMonth() != eventItem.startDateTime.getMonth() || lastEvent.getFullYear() != eventItem.startDateTime.getFullYear())){
                     eventItem.new_date = true;
@@ -60,18 +75,206 @@ if (Meteor.isClient) {
                 lastEvent = eventItem.startDateTime;
                 return eventItem;
             }});
+        },*/
+
+        events: function () {
+
+            var allEvents = Events.find().fetch();
+            var allEventsTemp = [];
+
+            allEvents.forEach(function (event) {
+                if( 1==1 /*event.startDateTime < curDate || event.startDateTime > endDate*/){
+
+
+                    var currentDate = new Date();
+
+                    while(currentDate < endDate){
+                        var eventTemp = (JSON.parse(JSON.stringify(event)));
+
+                        if(eventTemp.frequency == 2){
+
+                            eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
+                            eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+
+                            /*console.log(eventTemp.startDateTime);
+                            console.log(event.startDateTime);*/
+
+                            if( eventTemp.startDateTime.toString() != event.startDateTime.toString()) {
+                                //console.log(eventTemp.startDateTime);
+                                var weekDay = aWeekday[eventTemp.startDateTime.getDay()];
+                                weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+                                var day = ( eventTemp.startDateTime.getDate() == 1 ? '1er' : eventTemp.startDateTime.getDate() );
+                                var month = aMonth[eventTemp.startDateTime.getMonth()];
+                                var year = eventTemp.startDateTime.getFullYear();
+
+                                eventTemp.dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+                                //console.log(eventTemp.startDateTime);
+                                //console.log(eventTemp);
+                                allEventsTemp.push(eventTemp);
+                                eventTemp = null;
+                            }
+                        }else if( eventTemp.frequency == 3 ){
+
+                            if( currentDate.getDay() != 6 && currentDate.getDay() != 0 ){
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+
+                                /*console.log(eventTemp.startDateTime);
+                                console.log(event.startDateTime);*/
+
+                                if( eventTemp.startDateTime.toString() != event.startDateTime.toString()) {
+                                    //console.log(eventTemp.startDateTime);
+                                    var weekDay = aWeekday[eventTemp.startDateTime.getDay()];
+                                    weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+                                    var day = ( eventTemp.startDateTime.getDate() == 1 ? '1er' : eventTemp.startDateTime.getDate() );
+                                    var month = aMonth[eventTemp.startDateTime.getMonth()];
+                                    var year = eventTemp.startDateTime.getFullYear();
+
+                                    eventTemp.dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+                                    //console.log(eventTemp.startDateTime);
+                                    //console.log(eventTemp);
+                                    allEventsTemp.push(eventTemp);
+                                    eventTemp = null;
+                                }
+                            }
+                        }else if( eventTemp.frequency == 4 ){
+
+                            if( currentDate.getDay() == event.startDateTime.getDay() ){
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+
+                                /*console.log(eventTemp.startDateTime);
+                                 console.log(event.startDateTime);*/
+
+                                if( eventTemp.startDateTime.toString() != event.startDateTime.toString()) {
+                                    //console.log(eventTemp.startDateTime);
+                                    var weekDay = aWeekday[eventTemp.startDateTime.getDay()];
+                                    weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+                                    var day = ( eventTemp.startDateTime.getDate() == 1 ? '1er' : eventTemp.startDateTime.getDate() );
+                                    var month = aMonth[eventTemp.startDateTime.getMonth()];
+                                    var year = eventTemp.startDateTime.getFullYear();
+
+                                    eventTemp.dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+                                    //console.log(eventTemp.startDateTime);
+                                    //console.log(eventTemp);
+                                    allEventsTemp.push(eventTemp);
+                                    eventTemp = null;
+                                }
+                            }
+                        }else if( eventTemp.frequency == 5 ){
+
+                            if( currentDate.getDate() == event.startDateTime.getDate() ){
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+
+                                /*console.log(eventTemp.startDateTime);
+                                 console.log(event.startDateTime);*/
+
+                                if( eventTemp.startDateTime.toString() != event.startDateTime.toString()) {
+                                    //console.log(eventTemp.startDateTime);
+                                    var weekDay = aWeekday[eventTemp.startDateTime.getDay()];
+                                    weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+                                    var day = ( eventTemp.startDateTime.getDate() == 1 ? '1er' : eventTemp.startDateTime.getDate() );
+                                    var month = aMonth[eventTemp.startDateTime.getMonth()];
+                                    var year = eventTemp.startDateTime.getFullYear();
+
+                                    eventTemp.dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+                                    //console.log(eventTemp.startDateTime);
+                                    //console.log(eventTemp);
+                                    allEventsTemp.push(eventTemp);
+                                    eventTemp = null;
+                                }
+                            }
+                        }else if( eventTemp.frequency == 6 ){
+
+                            if( currentDate.getDate() == event.startDateTime.getDate() && currentDate.getMonth() == event.startDateTime.getMonth() ){
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+
+                                /*console.log(eventTemp.startDateTime);
+                                 console.log(event.startDateTime);*/
+
+                                if( eventTemp.startDateTime.toString() != event.startDateTime.toString()) {
+                                    //console.log(eventTemp.startDateTime);
+                                    var weekDay = aWeekday[eventTemp.startDateTime.getDay()];
+                                    weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+                                    var day = ( eventTemp.startDateTime.getDate() == 1 ? '1er' : eventTemp.startDateTime.getDate() );
+                                    var month = aMonth[eventTemp.startDateTime.getMonth()];
+                                    var year = eventTemp.startDateTime.getFullYear();
+
+                                    eventTemp.dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+                                    //console.log(eventTemp.startDateTime);
+                                    //console.log(eventTemp);
+                                    allEventsTemp.push(eventTemp);
+                                    eventTemp = null;
+                                }
+                            }
+                        }
+
+                        var newDate = currentDate.setDate(currentDate.getDate() + 1);
+                        currentDate = new Date(newDate);
+                    }
+                }
+
+            });
+
+            var events = Events.find( { startDateTime: {$gte: curDate, $lte: endDate} }, { sort: {startDateTime: 1} }).fetch();
+
+            /*console.log(allEventsTemp);*/
+
+            events = events.concat(allEventsTemp);
+            events.sort(function (a, b) {
+                return new Date(a.startDateTime) - new Date(b.startDateTime);
+            });
+
+            Session.set("events", events);
+
+            var eventsGrouped = ListGrouper.getGroup({
+                // Pass a MongoDB cursor or just a native Array to the collection field
+                collection: events,
+                // How would you like your data to be grouped?
+                // The groupBy object contains a name and a groupMethod.
+                groupBy: {
+                    // Give the grouping a name
+                    name: 'date',
+                    // The method used for grouping the data
+                    groupMethod: function ( event ) {
+                        return event.dateText;
+                    }
+                },
+                sums: [{
+                    // Show how many shots were made by the players in each group
+                    name: 'date',
+                    sumMethod: function ( memo, event ) {
+                        return event.dateText;
+                    }
+                }]
+            });
+            eventsGrouped.sort(function (a, b) {
+                console.log(a.groupItems[0].startDateTime);
+                console.log(b.groupItems);
+                return new Date(a.groupItems[0].startDateTime) - new Date(b.groupItems[0].startDateTime);
+            });
+
+            console.log(eventsGrouped);
+
+            return eventsGrouped;
         },
 
         log: function () {
             console.log(this);
         },
 
-        tooManyEventss: function () {
-            return Events.find().count() > limit;
+        tooManyEvents: function () {
+            return Session.get("events").length > limit;
         },
 
         noEvents: function () {
-            return Events.find().count() == 0;
+            if (Session.get("events")) {
+                return Session.get("events").length == 0;
+            }else{
+                return true;
+            }
         },
 
         days:  function () {
@@ -121,7 +324,7 @@ if (Meteor.isClient) {
         },
 
         weekdayChange: function () {
-            return ( Session.get("weekday") ? aWeekday[Session.get("weekday")] : aWeekday[new Date().getDay()] );
+            return ( Session.get("weekday") != null ? aWeekday[Session.get("weekday")] : aWeekday[new Date().getDay()] );
         },
 
         monthChange: function () {
@@ -173,19 +376,23 @@ if (Meteor.isClient) {
         "submit .new-event": function (event) {
             // This function is called when the new task form is submitted
             event.preventDefault();
+
             var day = $("select[name='day'] option[value='" + event.target.day.value + "']").text();
             var month = $("select[name='month'] option[value='" + event.target.month.value + "']").text();
             var iMonth = $(event.target.month).val();
             var year = $("select[name='year'] option[value='" + event.target.year.value + "']").text();
 
-
-
-            var title = event.target.title.value;
-            var place = event.target.place.value;
-            var dateText = day + ' ' + month + ' ' + year;
-
             var startHour = $(event.target.starthour).val();
             var startMin = ($(event.target.startmin).val() == 0 ? "00" : $(event.target.startmin).val() );
+            var startDateTime = new Date(year, iMonth, day, parseInt(startHour), parseInt(startMin));
+
+            var weekDay = aWeekday[startDateTime.getDay()];
+            weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+            var title = event.target.title.value;
+            var place = event.target.place.value;
+            var dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+
+
             var endHour = $(event.target.endhour).val();
             var endMin = ($(event.target.endmin).val() == 0 ? "00" : $(event.target.endmin).val() );
 
@@ -193,9 +400,7 @@ if (Meteor.isClient) {
             var endHourText = endHour + ":" + endMin;
             var frequency = event.target.frequency.value;
 
-            var startDateTime = new Date(year, iMonth, day, parseInt(startHour), parseInt(startMin));
-            console.log('startDateTime');
-            console.log(startDateTime);
+
             var endDateTime = new Date(year, iMonth, day, parseInt(endHour), parseInt(endMin));
 
             Events.insert({
@@ -225,7 +430,8 @@ if (Meteor.isClient) {
         },
 
         "change .day, change .month, change .year": function (event) {
-            weekday = new Date($(".year").val(), $(".month").val(), $(".day").val()).getDay();
+            var weekday = new Date($(".year").val(), $(".month").val(), $(".day").val()).getDay();
+            console.log(weekday);
             Session.set("weekday", weekday);
         },
 
@@ -236,7 +442,7 @@ if (Meteor.isClient) {
 
         "change .starthour": function (event) {
             currentEndHour = parseInt($(event.target).val()) + 1;
-            console.log(currentEndHour);
+            //console.log(currentEndHour);
             $("select[name='endhour'] option[value='" + currentEndHour + "']").prop('selected', true);
 
         }

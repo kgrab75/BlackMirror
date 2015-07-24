@@ -141,23 +141,28 @@
 </template>
 
 <template name="event">
-    <li class="{{#unless new_date}}event-group{{/unless}}" >
-        <button class="delete mobile-only">&times;</button>
+    <li>
+        <span class="date">{{#each sums}}{{sum}}{{/each}}</span>
 
-        {{#if new_date}}<span class="date">{{dateText}}</span>{{/if}}
-        <div class="event">
-            <div class="row1">
-                <div class="starttime">{{startHourText}}</div>
-                <div class="title">{{title}}</div>
+        {{#each groupItems}}
+            <button class="delete mobile-only">&times;</button>
+            <div class="event">
+                <div class="row1">
+                    <div class="starttime">{{startHourText}}</div>
+                    <div class="title">{{title}}</div>
+                </div>
+
+                <div class="row2">
+                    <div class="endtime">{{endHourText}}</div>
+                    <div class="place">{{place}}</div>
+                </div>
             </div>
-
-            <div class="row2">
-                <div class="endtime">{{endHourText}}</div>
-                <div class="place">{{place}}</div>
-            </div>
-        </div>
-
+        {{/each}}
     </li>
+</template>
+
+<template name="test">
+    {{log}}
 </template>
 
 <template name="day">

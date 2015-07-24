@@ -8,3 +8,5 @@ meteor-platform
 insecure
 meteorhacks:aggregate
 autopublish
+gaelan:each-with-index
+krstffr:list-grouper

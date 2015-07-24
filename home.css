@@ -140,6 +140,7 @@ label {
 }
 .event {
     border-left: 6px solid white;
+    margin: 8px 0;
     padding-left: 10px;
 }
 .event div.starttime, .event div.endtime {
