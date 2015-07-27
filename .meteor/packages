@@ -10,3 +10,4 @@ meteorhacks:aggregate
 autopublish
 gaelan:each-with-index
 krstffr:list-grouper
+selaias:meteor-simpleweather

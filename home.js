@@ -1,5 +1,7 @@
 Shops = new Mongo.Collection("shops");
 Events = new Mongo.Collection("events");
+Feeds = new Meteor.Collection("feeds");
+FeedEntries = new Meteor.Collection("feed_entries");
 limit = 5;
 
 aWeekday = [
@@ -11,6 +13,16 @@ aWeekday = [
     'vendredi',
     'samedi'
 ];
+
+aWeekdayWeather = {
+    'Mon' : 'Lun',
+    'Tue' : 'Mar',
+    'Wed' : 'Mer',
+    'Thu' : 'Jeu',
+    'Fri' : 'Ven',
+    'Sat' : 'Sam',
+    'Sun' : 'Dim'
+}
 
 aMonth = [
     'janvier',
@@ -27,6 +39,58 @@ aMonth = [
     'décembre'
 ];
 
+aWeather = {
+    "0" : "tornade",
+    "1" : "tempête tropicale",
+    "2" : "ouragan",
+    "3" : "orages violents",
+    "4" : "orages",
+    "5" : "pluie et neige",
+    "6" : "pluie et neige fondue",
+    "7" : "neige et neige fondue",
+    "8" : "brouillard givrant",
+    "9" : "bruine",
+    "10" : "pluie verglaçante",
+    "11" : "averses",
+    "12" : "averses",
+    "13" : "rafales de neige",
+    "14" : "légères chutes de neige",
+    "15" : "blizzard",
+    "16" : "neige",
+    "17" : "grêle",
+    "18" : "neige fondue",
+    "19" : "poussière",
+    "20" : "brumeux",
+    "21" : "brume",
+    "22" : "enfumé",
+    "23" : "bourrasques",
+    "24" : "venteux",
+    "25" : "froid",
+    "26" : "nuageux",
+    "27" : "nuageux",
+    "28" : "nuageux",
+    "29" : "partiellement nuageux",
+    "30" : "partiellement nuageux",
+    "31" : "nuit claire",
+    "32" : "ensoleillé",
+    "33" : "belle nuit",
+    "34" : "belle journée",
+    "35" : "mixte pluie et la grêle",
+    "36" : "chaud",
+    "37" : "orages isolés",
+    "38" : "orages intermittents",
+    "39" : "orages intermittents",
+    "40" : "averses intermittentes",
+    "41" : "chutes de neige abondantes",
+    "42" : "chutes de neige intermittentes",
+    "43" : "chutes de neige abondantes",
+    "44" : "partiellement nuageux",
+    "45" : "averses orageuses",
+    "46" : "chutes de neige",
+    "47" : "averses orageuses isolées",
+    "3200" : "indisponible"
+};
+
 if (Meteor.isClient) {
 
     date = new Date();
@@ -35,11 +99,18 @@ if (Meteor.isClient) {
     curDateTemp  = new Date( new Date().setHours(0, 0, 0, 0) );
     endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 7) );
 
+
+
     setInterval(function(){
         if(new Date( new Date().setHours(0, 0, 0, 0) ).getTime() != curDate.getTime()){
             location.reload();
         }
-    }, 60000);
+        var hours = (new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours() );
+        var minutes = (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes() );
+        var time = hours + ':' + minutes;
+        Session.set("time", time);
+
+    }, 1000);
 
     // This code only runs on the client
     Template.body.helpers({
@@ -54,28 +125,6 @@ if (Meteor.isClient) {
         noShops: function () {
             return Shops.find().count() == 0;
         },
-
-        /*events: function () {
-            var lastEvent = null;
-            return Events.find({}, {sort: {startDateTime: 1}, transform: function (eventItem) {
-
-                console.groupCollapsed('main');
-                console.log('eventItem');
-                console.log(eventItem);
-
-                console.log('lastEvent');
-                console.log(lastEvent);
-                console.groupEnd();
-
-                if (!lastEvent || (lastEvent.getDate() != eventItem.startDateTime.getDate() || lastEvent.getMonth() != eventItem.startDateTime.getMonth() || lastEvent.getFullYear() != eventItem.startDateTime.getFullYear())){
-                    eventItem.new_date = true;
-                }else{
-                    eventItem.new_date = false;
-                }
-                lastEvent = eventItem.startDateTime;
-                return eventItem;
-            }});
-        },*/
 
         events: function () {
 
@@ -93,8 +142,8 @@ if (Meteor.isClient) {
 
                         if(eventTemp.frequency == 2){
 
-                            eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
-                            eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+                            eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
+                            eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
 
                             /*console.log(eventTemp.startDateTime);
                             console.log(event.startDateTime);*/
@@ -116,8 +165,8 @@ if (Meteor.isClient) {
                         }else if( eventTemp.frequency == 3 ){
 
                             if( currentDate.getDay() != 6 && currentDate.getDay() != 0 ){
-                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
-                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
 
                                 /*console.log(eventTemp.startDateTime);
                                 console.log(event.startDateTime);*/
@@ -140,8 +189,8 @@ if (Meteor.isClient) {
                         }else if( eventTemp.frequency == 4 ){
 
                             if( currentDate.getDay() == event.startDateTime.getDay() ){
-                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
-                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
 
                                 /*console.log(eventTemp.startDateTime);
                                  console.log(event.startDateTime);*/
@@ -164,8 +213,8 @@ if (Meteor.isClient) {
                         }else if( eventTemp.frequency == 5 ){
 
                             if( currentDate.getDate() == event.startDateTime.getDate() ){
-                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
-                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
 
                                 /*console.log(eventTemp.startDateTime);
                                  console.log(event.startDateTime);*/
@@ -188,8 +237,8 @@ if (Meteor.isClient) {
                         }else if( eventTemp.frequency == 6 ){
 
                             if( currentDate.getDate() == event.startDateTime.getDate() && currentDate.getMonth() == event.startDateTime.getMonth() ){
-                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), 0, 0, 0));
-                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), 0, 0, 0));
+                                eventTemp.startDateTime = new Date(currentDate.setHours(event.startDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
+                                eventTemp.endDateTime = new Date(currentDate.setHours(event.endDateTime.getHours(), event.startDateTime.getMinutes(), 0, 0));
 
                                 /*console.log(eventTemp.startDateTime);
                                  console.log(event.startDateTime);*/
@@ -329,8 +378,11 @@ if (Meteor.isClient) {
 
         monthChange: function () {
             return ( Session.get("month") ? aMonth[Session.get("month")] : aMonth[new Date().getMonth()] );
-        }
+        },
 
+        time: function () {
+            return Session.get('time');
+        }
 
     });
 
@@ -465,6 +517,47 @@ if (Meteor.isClient) {
             Events.remove(this._id);
         }
     });
+
+
+    function getWeather() {
+        var options = {
+            location: 'Paris, FR', // Paris
+            unit: 'c',
+            success: function (weather) {
+                html = '<div class="today">';
+                html += '<h2><i class="sw icon-' + weather.code + '"></i> '
+                html += weather.temp + '&deg;' + weather.units.temp + '</h2>';
+                html += '<ul>';
+                html += '<li class="currently">' + aWeather[weather.code] + '</li>';
+                html += '</ul>';
+                html += '</div>';
+
+                for(i = 1; i<5; i++){
+                    html += '<div class="after">';
+                    html += '<span class="day">' + aWeekdayWeather[ weather.forecast[i].day ] + '</span>';
+                    html += '<h6><i class="sw icon-' + weather.forecast[i].code + '"></i> '
+                    html += weather.forecast[i].low + '&deg;' + weather.units.temp + '</br>';
+                    html += weather.forecast[i].high + '&deg;' + weather.units.temp + '</h6>';
+                    html += '</div>';
+                }
+
+
+                $("#weather").html(html);
+            },
+            error: function (error) {
+                $("#weather").html('<p>' + error + '</p>');
+            }
+        };
+
+        Weather.options = options;
+        Weather.load();
+    }
+    getWeather();
+
+    Template.simpleWeather.rendered = function(){
+        setInterval(getWeather, 60000);
+    }
+
 }
 
 if (Meteor.isServer) {

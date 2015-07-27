@@ -6,9 +6,16 @@
 </head>
 
 <body>
+<div class="container rss">
+
+</div>
+<div class="container weather">
+    <div class="time">{{time}}</div>
+    {{>simpleWeather}}
+</div>
+
 <div class="container shops">
     <header>
-        <h1>Courses</h1>
 
         <form class="new-shop mobile-only">
             <input type="text" name="text" placeholder=" + Nouvelle course" />
@@ -37,8 +44,6 @@
 
 <div class="container events">
     <header>
-        <h1>Calendrier</h1>
-
         <button class="toggle-new-event mobile-only">+ Nouvel événement</button>
 
         <form class="new-event hide mobile-only">
@@ -127,6 +132,8 @@
         {{/if}}
     </ul>
 </div>
+
+
 
 </body>
 

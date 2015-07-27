@@ -18,6 +18,10 @@ body, html {
     width: device-width;
 }
 
+.container {
+    margin-right: 10px;
+}
+
 .new-shop input{
     width: 100%;
     font-size: 16px;
@@ -177,22 +181,92 @@ li.event-group {
     margin-top: -8px;
 }
 
+#weather {
+    background-color: transparent;
+    color: white;
+    display: block;
+    width: 100%;
+}
+#weather .today {
+    display: inline-block;
+    margin-left: 0;
+    width: 100%;
+}
+#weather .after {
+    display: inline-block;
+    width: 25%;
+    margin-top: 10px;
+}
+#weather .after h6 {
+    font-size: 12px;
+    margin: 0;
+}
+#weather .after i {
+    font-size: 50px;
+    display: inline-block;
+    width: 100%;
+}
+#weather h2{
+    color: #ffffff;
+    margin: 0;
+}
+#weather i{
+    color: #ffffff;
+    line-height: 0;
+}
+#weather li {
+    background-color: transparent;
+    border: 0 none;
+    font-size: 22px;
+    padding: 0;
+}
+
+#weather span.day {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.time{
+    text-align: center;
+}
+
 @media (min-width: 768px) {
     .mobile-only{
         display: none;
     }
 
+    .container {
+        margin-right: 0;
+    }
+
     .container.shops, .container.events{
-        width: 30%;
+        width: 40%;
         display: inline-block;
         vertical-align: top;
+        font-size: 1.5em;
     }
     .container.shops {
         margin-left: 1%;
     }
     .container.events {
-        margin-left: 38%;
+        margin-left: 18%;
     }
+    .container.weather {
+        bottom: 0;
+        height: 250px;
+        left: 0;
+        margin: 0 auto;
+        position: fixed;
+        width: 100%;
+    }
+    .time {
+        display: block;
+        font-size: 120px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+
     .event div.title, .event div.place {
         width: 87%;
     }
@@ -201,7 +275,18 @@ li.event-group {
         width: 20%;
     }
     .event div.title, .event div.place {
-        width: 80%;
+        width: 75%;
+    }
+
+    #weather .today {
+        width: 50%;
+        margin-left: 23%;
+        display: inline-block;
+    }
+    #weather .after {
+        display: inline-block;
+        width: 6%;
+        margin-top: 0;
     }
 }
 
