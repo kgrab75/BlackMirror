@@ -22,7 +22,7 @@ body, html {
     margin-right: 10px;
 }
 
-.new-shop input{
+.new-shop input, .new-city input{
     width: 100%;
     font-size: 16px;
     margin: 0 5px;
@@ -34,7 +34,7 @@ form {
     position: relative;
 }
 
-.new-shop input {
+.new-shop input, .new-city input {
     box-sizing: border-box;
     padding: 10px 0;
     background: transparent;
@@ -45,8 +45,16 @@ form {
     color: #ffffff;
 }
 
-.new-shop input:focus{
+.new-shop input:focus, .new-city input{
     outline: 0;
+}
+
+a{
+    color: #ffffff;
+    text-decoration: none;
+}
+a.rss-link{
+    font-size: 2em;
 }
 
 ul {
@@ -213,6 +221,7 @@ li.event-group {
 #weather i{
     color: #ffffff;
     line-height: 0;
+    height: 24px;
 }
 #weather li {
     background-color: transparent;
@@ -228,6 +237,11 @@ li.event-group {
 
 .time{
     text-align: center;
+}
+.container.rss div{
+    margin: 0;
+    text-align: center;
+
 }
 
 @media (min-width: 768px) {
@@ -254,6 +268,14 @@ li.event-group {
     .container.weather {
         bottom: 0;
         height: 250px;
+        left: 0;
+        margin: 0 auto;
+        position: fixed;
+        width: 100%;
+    }
+    .container.rss {
+        bottom: 300px;
+        height: 25px;
         left: 0;
         margin: 0 auto;
         position: fixed;

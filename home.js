@@ -99,7 +99,9 @@ if (Meteor.isClient) {
     curDateTemp  = new Date( new Date().setHours(0, 0, 0, 0) );
     endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 7) );
 
-
+    function set(key, value) {
+        Session.set(key, value);
+    }
 
     setInterval(function(){
         if(new Date( new Date().setHours(0, 0, 0, 0) ).getTime() != curDate.getTime()){
@@ -300,12 +302,8 @@ if (Meteor.isClient) {
                 }]
             });
             eventsGrouped.sort(function (a, b) {
-                console.log(a.groupItems[0].startDateTime);
-                console.log(b.groupItems);
                 return new Date(a.groupItems[0].startDateTime) - new Date(b.groupItems[0].startDateTime);
             });
-
-            console.log(eventsGrouped);
 
             return eventsGrouped;
         },
@@ -392,7 +390,37 @@ if (Meteor.isClient) {
         }
     });
 
+    Template.rssT.helpers({
+        rss: function () {
+
+            $.ajax({
+                type: "GET",
+                url: "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&q=http://rss.lemonde.fr/c/205/f/3050/index.rss",
+                dataType: "jsonp",
+                success: function (data) {
+                    set("rss", data.responseData.feed.entries);
+                    Template.rssT.rendered();
+                }
+            }, this);
+            //console.log(Session.get('rss'));
+            return Session.get('rss');
+        }
+    });
+
     Template.body.events({
+        "submit .new-city": function (event) {
+            // This function is called when the new task form is submitted
+
+            var location = event.target.city.value;
+
+            Template.simpleWeather.rendered(location);
+
+            // Clear form
+            event.target.city.value = "";
+            // Prevent default form submit
+            return false;
+        },
+
         "submit .new-shop": function (event) {
             // This function is called when the new task form is submitted
 
@@ -483,7 +511,6 @@ if (Meteor.isClient) {
 
         "change .day, change .month, change .year": function (event) {
             var weekday = new Date($(".year").val(), $(".month").val(), $(".day").val()).getDay();
-            console.log(weekday);
             Session.set("weekday", weekday);
         },
 
@@ -498,7 +525,6 @@ if (Meteor.isClient) {
             $("select[name='endhour'] option[value='" + currentEndHour + "']").prop('selected', true);
 
         }
-
 
     });
 
@@ -519,9 +545,30 @@ if (Meteor.isClient) {
     });
 
 
-    function getWeather() {
+
+    Template.rssT.rendered = function() {
+        console.log('test')
+        setTimeout( function () {
+            $('#carousel').slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                autoplay: true,
+                autoplaySpeed: 8000,
+                arrows: false,
+                speed: 500,
+                fade: true
+            });
+        }, 1000);
+    };
+
+
+    function getWeather(location) {
+        //console.log(location);
+        if(typeof location == 'undefined'){
+            location = 'Paris, FR';
+        }
         var options = {
-            location: 'Paris, FR', // Paris
+            location: location, // Paris
             unit: 'c',
             success: function (weather) {
                 html = '<div class="today">';
@@ -529,6 +576,8 @@ if (Meteor.isClient) {
                 html += weather.temp + '&deg;' + weather.units.temp + '</h2>';
                 html += '<ul>';
                 html += '<li class="currently">' + aWeather[weather.code] + '</li>';
+                html += '<li class="currently">à</li>';
+                html += '<li class="currently">' + weather.city + '</li>';
                 html += '</ul>';
                 html += '</div>';
 
@@ -554,8 +603,8 @@ if (Meteor.isClient) {
     }
     getWeather();
 
-    Template.simpleWeather.rendered = function(){
-        setInterval(getWeather, 60000);
+    Template.simpleWeather.rendered = function(location){
+        setInterval(getWeather(location), 60000);
     }
 
 }

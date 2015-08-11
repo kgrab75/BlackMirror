@@ -6,10 +6,15 @@
 </head>
 
 <body>
-<div class="container rss">
 
-</div>
 <div class="container weather">
+    <header>
+
+        <form class="new-city mobile-only">
+            <input type="text" name="city" placeholder=" + Nouvelle ville" />
+        </form>
+
+    </header>
     <div class="time">{{time}}</div>
     {{>simpleWeather}}
 </div>
@@ -133,9 +138,20 @@
     </ul>
 </div>
 
+<div class="container rss">
+    {{> rssT}}
+</div>
 
 
 </body>
+
+<template name="rssT">
+    <div id="carousel">
+        {{#each rss}}
+            <div><a class="rss-link" href="{{link}}" target="_blank">{{title}}</a></div>
+        {{/each}}
+    </div>
+</template>
 
 <template name="shop">
     <li class="{{#if checked}}checked{{/if}}">
@@ -166,10 +182,6 @@
             </div>
         {{/each}}
     </li>
-</template>
-
-<template name="test">
-    {{log}}
 </template>
 
 <template name="day">
