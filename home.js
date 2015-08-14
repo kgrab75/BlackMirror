@@ -408,6 +408,12 @@ if (Meteor.isClient) {
     });
 
     Template.body.events({
+		"click .sms": function (event) {
+			Meteor.call("sendSMS");
+            
+            return false;
+        },
+		
         "submit .new-city": function (event) {
             // This function is called when the new task form is submitted
 
@@ -608,6 +614,35 @@ if (Meteor.isClient) {
     }
 
 }
+
+Meteor.methods({
+    sendSMS: function () {
+		var accountSid = 'AC0989ac8a5de7c8505b4c450a2a5ec861'; 
+		var authToken = 'b9116fe55aba63cbe8054356aac35e80'; 
+		var body = '\n \n Bonjour Geoffrey,\n Voici la liste des courses : \n';
+
+		var shopList = Shops.find({}, {sort: {createdAt: -1}, limit: limit}).fetch();
+		
+		shopList.forEach(function (shop) {
+			body += shop.text + '\n';
+		});
+		
+        twilio = Twilio(accountSid, authToken);
+        twilio.sendSms({
+            to:'+33647936273', 
+            from: '+12056059940', 
+            body: body
+        }, function(err, responseData) { //this function is executed when a response is received from Twilio
+            if (!err) {
+                console.log(responseData.from); // outputs "+14506667788"
+                console.log(responseData.body); // outputs "word to your mother."
+            }
+			if (err) {
+                console.log(err); // outputs "+14506667788"
+            }
+        });
+    }
+});
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
