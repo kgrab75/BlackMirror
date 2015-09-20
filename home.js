@@ -99,6 +99,34 @@ if (Meteor.isClient) {
     curDateTemp  = new Date( new Date().setHours(0, 0, 0, 0) );
     endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 7) );
 
+    if (annyang) {
+        // Let's define our first command. First the text we expect, and then the function it should call
+        annyang.debug();
+        annyang.setLanguage('fr-FR');
+        var commands = {
+            'envoie la liste des courses à *name': function(name) {
+                Meteor.call("sendSMS", name);
+            },
+
+            'penser à acheter *obj': function(obj) {
+
+                Meteor.call("addShop", obj);
+            },
+
+            'supprimer': function() {
+
+                Meteor.call("rmLastShop");
+            }
+        };
+
+        // Add our commands to annyang
+        annyang.addCommands(commands);
+
+        // Start listening. You can call this here, or attach this call to an event, button, etc.
+        annyang.start({ autoRestart: true, continuous: true });
+    }
+
+
     function set(key, value) {
         Session.set(key, value);
     }
@@ -395,7 +423,7 @@ if (Meteor.isClient) {
 
             $.ajax({
                 type: "GET",
-                url: "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&q=http://rss.lemonde.fr/c/205/f/3050/index.rss",
+                url: "https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&q=http://rss.lemonde.fr/c/205/f/3050/index.rss",
                 dataType: "jsonp",
                 success: function (data) {
                     set("rss", data.responseData.feed.entries);
@@ -550,8 +578,6 @@ if (Meteor.isClient) {
         }
     });
 
-
-
     Template.rssT.rendered = function() {
         console.log('test')
         setTimeout( function () {
@@ -566,7 +592,6 @@ if (Meteor.isClient) {
             });
         }, 1000);
     };
-
 
     function getWeather(location) {
         //console.log(location);
@@ -616,20 +641,27 @@ if (Meteor.isClient) {
 }
 
 Meteor.methods({
-    sendSMS: function () {
+    sendSMS: function (name) {
+        var to = '';
 		var accountSid = 'AC0989ac8a5de7c8505b4c450a2a5ec861'; 
 		var authToken = 'b9116fe55aba63cbe8054356aac35e80'; 
-		var body = '\n \n Bonjour Geoffrey,\n Voici la liste des courses : \n';
+		var body = '\n \n Bonjour ' + name + ',\n Voici la liste des courses : \n';
 
 		var shopList = Shops.find({}, {sort: {createdAt: -1}, limit: limit}).fetch();
 		
 		shopList.forEach(function (shop) {
 			body += shop.text + '\n';
 		});
-		
+
+        name = name.toLowerCase();
+
+        console.log(name);
+
+        if(name == 'kevin' || name == 'kévin'){ to = '+33647936273';}
+        if(name == 'nana'){ to = '+33674379519';}
         twilio = Twilio(accountSid, authToken);
         twilio.sendSms({
-            to:'+33647936273', 
+            to: to,
             from: '+12056059940', 
             body: body
         }, function(err, responseData) { //this function is executed when a response is received from Twilio
@@ -641,6 +673,19 @@ Meteor.methods({
                 console.log(err); // outputs "+14506667788"
             }
         });
+    },
+
+    addShop: function(obj){
+        Shops.insert({
+            text: obj,
+            createdAt: new Date() // current time
+        });
+    },
+
+    rmLastShop : function(){
+        shop = Shops.find({}, {sort: {createdAt: -1}, limit: 1}).fetch();
+        console.log(shop[0]._id);
+        Shops.remove(shop[0]._id);
     }
 });
 
