@@ -692,5 +692,6 @@ Meteor.methods({
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
+	SSL('/meteor/blackMirror/private/server.key','/meteor/blackMirror/private/server.crt', 443);
   });
 }
