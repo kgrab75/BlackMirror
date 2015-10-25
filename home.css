@@ -257,7 +257,8 @@ li.event-group {
         width: 40%;
         display: inline-block;
         vertical-align: top;
-        font-size: 1.5em;
+        font-size: 3em;
+        font-weight: bold;
     }
     .container.shops {
         margin-left: 1%;
