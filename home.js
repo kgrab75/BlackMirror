@@ -119,6 +119,18 @@ if (Meteor.isClient) {
 
             'supprimer': function() {
                 Meteor.call("rmLastShop");
+            },
+
+            'supprimer tout': function() {
+                Meteor.call("rmAllShop");
+            },
+
+            'vider la liste': function() {
+                Meteor.call("rmAllShop");
+            },
+
+            'bonjour': function() {
+                Meteor.call("msg");
             }
         };
 
@@ -147,6 +159,7 @@ if (Meteor.isClient) {
 
     // This code only runs on the client
     Template.body.helpers({
+
         shops: function () {
             return Shops.find({}, {sort: {createdAt: -1}, limit: limit});
         },
@@ -651,7 +664,8 @@ Meteor.methods({
 		var body = '\n \n Bonjour ' + name + ',\n Voici la liste des courses : \n';
 
 		var shopList = Shops.find({}, {sort: {createdAt: -1}, limit: limit}).fetch();
-		
+		var shopList = Shops.find({}, {sort: {createdAt: -1}, limit: limit}).fetch();
+
 		shopList.forEach(function (shop) {
 			body += shop.text + '\n';
 		});
@@ -692,14 +706,13 @@ Meteor.methods({
     },
 
     rmItemShop : function(item){
-        console.log(item);
         item = item + "*";
-
-        console.log(item);
-
         shop = Shops.find({text:{$regex:item}}, {sort: {createdAt: -1}, limit: 1}).fetch();
-        console.log(shop[0]._id);
         Shops.remove(shop[0]._id);
+    },
+
+    rmAllShop : function(){
+        Shops.remove({});
     }
 });
 
