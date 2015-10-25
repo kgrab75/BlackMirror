@@ -113,8 +113,11 @@ if (Meteor.isClient) {
                 Meteor.call("addShop", obj);
             },
 
-            'supprimer': function() {
+            'supprimer *item': function(item) {
+                Meteor.call("rmItemShop", item);
+            },
 
+            'supprimer': function() {
                 Meteor.call("rmLastShop");
             }
         };
@@ -684,6 +687,17 @@ Meteor.methods({
 
     rmLastShop : function(){
         shop = Shops.find({}, {sort: {createdAt: -1}, limit: 1}).fetch();
+        console.log(shop[0]._id);
+        Shops.remove(shop[0]._id);
+    },
+
+    rmItemShop : function(item){
+        console.log(item);
+        item = item + "*";
+
+        console.log(item);
+
+        shop = Shops.find({text:{$regex:item}}, {sort: {createdAt: -1}, limit: 1}).fetch();
         console.log(shop[0]._id);
         Shops.remove(shop[0]._id);
     }
