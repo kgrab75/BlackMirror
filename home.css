@@ -194,6 +194,7 @@ li.event-group {
     color: white;
     display: block;
     width: 100%;
+    font-size: 20px;
 }
 #weather .today {
     display: inline-block;
@@ -206,13 +207,14 @@ li.event-group {
     margin-top: 10px;
 }
 #weather .after h6 {
-    font-size: 12px;
+    font-size: 20px;
     margin: 0;
 }
 #weather .after i {
-    font-size: 50px;
+    font-size: 80px;
     display: inline-block;
     width: 100%;
+    margin: 10px 0 30px 0;
 }
 #weather h2{
     color: #ffffff;
@@ -268,15 +270,15 @@ li.event-group {
     }
     .container.weather {
         bottom: 0;
-        height: 250px;
+        height: 300px;
         left: 0;
         margin: 0 auto;
         position: fixed;
         width: 100%;
     }
     .container.rss {
-        bottom: 300px;
-        height: 25px;
+        bottom: 350px;
+        height: 60px;
         left: 0;
         margin: 0 auto;
         position: fixed;
@@ -302,13 +304,13 @@ li.event-group {
     }
 
     #weather .today {
-        width: 50%;
-        margin-left: 23%;
+        width: 35%;
+        margin-left: 33%;
         display: inline-block;
     }
     #weather .after {
         display: inline-block;
-        width: 6%;
+        width: 8%;
         margin-top: 0;
     }
 }
