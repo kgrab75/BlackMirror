@@ -254,17 +254,17 @@ li.event-group {
     }
 
     .container.shops, .container.events{
-        width: 40%;
+        width: 46%;
         display: inline-block;
         vertical-align: top;
-        font-size: 3em;
+        font-size: 2.5em;
         font-weight: bold;
     }
     .container.shops {
-        margin-left: 1%;
+        margin-left: 0%;
     }
     .container.events {
-        margin-left: 18%;
+        margin-left: 7%;
     }
     .container.weather {
         bottom: 0;
@@ -294,7 +294,7 @@ li.event-group {
         width: 87%;
     }
     .event div.starttime, .event div.endtime {
-        font-size: 0.7em;
+        font-size: 0.5em;
         width: 20%;
     }
     .event div.title, .event div.place {
