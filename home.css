@@ -195,6 +195,8 @@ li.event-group {
     display: block;
     width: 100%;
     font-size: 20px;
+    position: relative;
+    bottom: 30px;
 }
 #weather .today {
     display: inline-block;
@@ -240,6 +242,10 @@ li.event-group {
 .time{
     text-align: center;
 }
+.time.date {
+    font-size: 2.5em;
+}
+
 .container.rss div{
     margin: 0;
     text-align: center;
@@ -247,6 +253,16 @@ li.event-group {
 }
 
 @media (min-width: 768px) {
+
+    .true{
+        color: #FFF;
+
+    }
+    .false{
+        color: #000;
+        -webkit-transition: color 0.5s linear 3s;
+    }
+
     .mobile-only{
         display: none;
     }
@@ -270,7 +286,7 @@ li.event-group {
     }
     .container.weather {
         bottom: 0;
-        height: 300px;
+        height: 340px;
         left: 0;
         margin: 0 auto;
         position: fixed;
@@ -312,6 +328,17 @@ li.event-group {
         display: inline-block;
         width: 8%;
         margin-top: 0;
+    }
+
+    .msg {
+        display: table;
+        text-align: center;
+        font-size: 4em;
+        font-weight: bold;
+        text-transform: uppercase;
+        top: 48%;
+        position: absolute;
+        width: 100%;
     }
 }
 

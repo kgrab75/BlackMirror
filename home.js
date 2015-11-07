@@ -22,7 +22,7 @@ aWeekdayWeather = {
     'Fri' : 'Ven',
     'Sat' : 'Sam',
     'Sun' : 'Dim'
-}
+};
 
 aMonth = [
     'janvier',
@@ -97,20 +97,168 @@ if (Meteor.isClient) {
     curDate  = new Date( new Date().setHours(0, 0, 0, 0) );
     //curDate  = new Date(date.getTime() - (100 * 24 * 60 * 60 * 1000));
     curDateTemp  = new Date( new Date().setHours(0, 0, 0, 0) );
-    endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 7) );
+    endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 30) );
 
     if (annyang) {
         // Let's define our first command. First the text we expect, and then the function it should call
         annyang.debug();
         annyang.setLanguage('fr-FR');
+
+        var commandsEventTitle = {
+            'annuler': function (){
+                Meteor.call('msg', '"Ajouter un événement" annulé !', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commands);
+            },
+            '*title': function (title) {
+                Session.set('eventTitle', title);
+
+                Meteor.call('msg', "Quel est le lieu de l'événement ?", function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventLocation);
+            }
+        };
+
+        var commandsEventLocation = {
+            'annuler': function (){
+                Meteor.call('msg', '"Ajouter un événement" annulé !', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commands);
+            },
+            '*location': function (location) {
+                Session.set('eventLocation', location);
+
+                Meteor.call('msg', "Quelle est la date de l'événement ?", function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventDate);
+            }
+        };
+
+        var commandsEventDate = {
+            'annuler': function (){
+                Meteor.call('msg', '"Ajouter un événement" annulé !', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commands);
+            },
+            '(le) *date': function (date) {
+                isDay = false;
+                isMonth = false;
+                isYear = false;
+                aDate = date.split( ' ' );
+                if ( aDate.length == 3 )
+                {
+                    day = parseInt( aDate[ 0 ] );
+                    month = aDate[ 1 ];
+                    year = parseInt( aDate[ 2 ] );
+                }else{
+                    day = parseInt( aDate[ 0 ]);
+                    month = aDate[ 1 ];
+                    year = curDate.getFullYear();
+                }
+
+                if ( day >= 1 && day <=  31 ){
+                    isDay = true;
+                }
+
+                if ( aMonth.indexOf( month ) >= 0 && aMonth.indexOf( month ) <=  11 ){
+                    isMonth = true;
+                }
+
+                if ( year >= parseInt( curDate.getFullYear() ) ){
+                    isYear = true;
+                }
+
+                if ( isDay && isMonth && isYear ) {
+                    Session.set('eventDate', date);
+
+                    Meteor.call('msg', "Quelle est l'heure de début de l'événement ?", function(error, result){
+                        Session.set('msg', result);
+                    });
+                    annyang.removeCommands();
+                    annyang.addCommands(commandsEventStartHour);
+                }else{
+                    Meteor.call('msg', 'Date incorrecte !<br>Quelle est la date de l\'événement ?', function(error, result){
+                        Session.set('msg', result);
+                    });
+                }
+            }
+        };
+
+        var commandsEventStartHour = {
+            'annuler': function (){
+                Meteor.call('msg', '"Ajouter un événement" annulé !', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commands);
+            },
+            '(à) *starthour': function (starthour) {
+
+                isHour = false;
+                isMin = false;
+
+                Session.set('eventStartHour', starthour);
+
+                Meteor.call('msg', 'Quelle est l\'heure de fin de l\'événement ?', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventEndHour);
+            }
+        };
+
+        var commandsEventEndHour = {
+            'annuler': function (){
+                Meteor.call('msg', '"Ajouter un événement" annulé !', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commands);
+            },
+            '(à) *endhour': function (endhour) {
+                Session.set('eventEndHour', endhour);
+
+                //Meteor.call('msg', "Quelle est l'heure de fin de l'événement", function(error, result){
+                //    Session.set('msg', result);
+                //});
+
+                Meteor.call('addEvent', {
+                    'title': Session.get( 'eventTitle'),
+                    'location': Session.get( 'eventLocation'),
+                    'date': Session.get( 'eventDate'),
+                    'starthour': Session.get( 'eventStartHour'),
+                    'endhour': Session.get( 'eventEndHour')
+                });
+
+                annyang.removeCommands();
+                annyang.addCommands(commands);
+            }
+        };
+
         var commands = {
-            'envoie la liste des courses à *name': function(name) {
-                Meteor.call("sendSMS", name);
+            'envoie (la liste des courses) à *name': function(name) {
+                Meteor.call("sendSMS", name, function(error, result){
+                    Session.set('msg', result);
+                });
             },
 
             'penser à acheter *obj': function(obj) {
 
                 Meteor.call("addShop", obj);
+            },
+
+            'retirer l\'événement *title': function( title ) {
+                Meteor.call('rmEvent', title);
             },
 
             'supprimer *item': function(item) {
@@ -130,12 +278,34 @@ if (Meteor.isClient) {
             },
 
             'bonjour': function() {
-                Meteor.call("msg");
+                Meteor.call('msg', "Bonjour, Toi!", function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+
+            'comment tu t\'appelles': function() {
+                Meteor.call('msg', 'Je me nomme BlackMirror.<br>Et toi?', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+
+            'je m\'appelle *name': function( name ) {
+                Meteor.call('msg', 'Comment tu vas ' + name, function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+
+            'ajouter un événement': function() {
+                Meteor.call('msg', 'Quel est le titre de votre événement ?', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventTitle);
             }
         };
 
         // Add our commands to annyang
-        annyang.addCommands(commands);
+        annyang.addCommands(commands, true);
 
         // Start listening. You can call this here, or attach this call to an event, button, etc.
         annyang.start({ autoRestart: true, continuous: true });
@@ -153,12 +323,26 @@ if (Meteor.isClient) {
         var hours = (new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours() );
         var minutes = (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes() );
         var time = hours + ':' + minutes;
+        var date = new Date().getDay() + ' ' + aMonth[ new Date().getMonth() ] + ' ' + new Date().getFullYear();
+        getWeather();
         Session.set("time", time);
-
+        Session.set("date", date);
     }, 1000);
 
     // This code only runs on the client
     Template.body.helpers({
+
+        message: function(){
+            Session.set('hasmessage', 'true');
+            setTimeout(function(){
+                Session.set('hasmessage', 'false');
+            }, 3000)
+            return Session.get('msg');
+        },
+
+        hasmessage: function( boolean ){
+            return Session.get('hasmessage');
+        },
 
         shops: function () {
             return Shops.find({}, {sort: {createdAt: -1}, limit: limit});
@@ -424,6 +608,10 @@ if (Meteor.isClient) {
 
         time: function () {
             return Session.get('time');
+        },
+
+        date: function () {
+            return Session.get('date');
         }
 
     });
@@ -614,12 +802,12 @@ if (Meteor.isClient) {
         if(typeof location == 'undefined'){
             location = 'Paris, FR';
         }
-        var options = {
+        var optionsWeather = {
             location: location, // Paris
             unit: 'c',
             success: function (weather) {
                 html = '<div class="today">';
-                html += '<h2><i class="sw icon-' + weather.code + '"></i> '
+                html += '<h2><i class="sw icon-' + weather.code + '"></i> ';
                 html += weather.temp + '&deg;' + weather.units.temp + '</h2>';
                 html += '<ul>';
                 html += '<li class="currently">' + aWeather[weather.code] + '</li>';
@@ -631,7 +819,7 @@ if (Meteor.isClient) {
                 for(i = 1; i<5; i++){
                     html += '<div class="after">';
                     html += '<span class="day">' + aWeekdayWeather[ weather.forecast[i].day ] + '</span>';
-                    html += '<h6><i class="sw icon-' + weather.forecast[i].code + '"></i> '
+                    html += '<h6><i class="sw icon-' + weather.forecast[i].code + '"></i> ';
                     html += weather.forecast[i].low + '&deg;' + weather.units.temp + '</br>';
                     html += weather.forecast[i].high + '&deg;' + weather.units.temp + '</h6>';
                     html += '</div>';
@@ -645,7 +833,7 @@ if (Meteor.isClient) {
             }
         };
 
-        Weather.options = options;
+        Weather.options = optionsWeather;
         Weather.load();
     }
     getWeather();
@@ -657,13 +845,16 @@ if (Meteor.isClient) {
 }
 
 Meteor.methods({
+    msg: function( text ){
+        return text;
+    },
+
     sendSMS: function (name) {
         var to = '';
 		var accountSid = 'AC0989ac8a5de7c8505b4c450a2a5ec861'; 
 		var authToken = 'b9116fe55aba63cbe8054356aac35e80'; 
 		var body = '\n \n Bonjour ' + name + ',\n Voici la liste des courses : \n';
 
-		var shopList = Shops.find({}, {sort: {createdAt: -1}, limit: limit}).fetch();
 		var shopList = Shops.find({}, {sort: {createdAt: -1}, limit: limit}).fetch();
 
 		shopList.forEach(function (shop) {
@@ -685,11 +876,13 @@ Meteor.methods({
             if (!err) {
                 console.log(responseData.from); // outputs "+14506667788"
                 console.log(responseData.body); // outputs "word to your mother."
+
             }
 			if (err) {
                 console.log(err); // outputs "+14506667788"
             }
         });
+        return 'Le sms a bien été envoyé';
     },
 
     addShop: function(obj){
@@ -713,6 +906,114 @@ Meteor.methods({
 
     rmAllShop : function(){
         Shops.remove({});
+    },
+
+    addEvent: function( event ){
+        console.log( event );
+        var curDate = new Date;
+
+        startHourText = event.starthour.replace('h', ':');
+        if ( startHourText.length == 2 || startHourText.length == 3 ) startHourText = startHourText + '00';
+        endHourText = event.endhour.replace('h', ':');
+        if ( endHourText.length == 2 || endHourText.length == 3 ) endHourText = endHourText + '00';
+
+        aDate = event.date.split(' ');
+        console.log( aDate.length );
+
+        if ( aDate.length == 3 )
+        {
+            year = aDate[2];
+        }else{
+            year = curDate.getFullYear();
+        }
+        iMonth =  aMonth.indexOf( aDate[1] );
+        day =  aDate[0];
+
+        if ( startHourText.length % 2 == 0  )
+        {
+            startHour = startHourText.substring(0,1);
+        }
+        else
+        {
+            startHour = startHourText.substring(0,2);
+        }
+
+        if ( startHourText.length == 2 || startHourText.length == 3 )
+        {
+            startMin = 0;
+        }
+        else if( startHourText.length == 4 )
+        {
+            startMin = startHourText.substring(2,4);
+        }
+        else if( startHourText.length == 5 )
+        {
+            startMin = startHourText.substring(3,5);
+        }
+        console.log('parseInt(startMin)');
+        console.log(startMin);
+        console.log(parseInt(startMin));
+
+        if ( endHourText.length % 2 == 0  )
+        {
+            endHour = endHourText.substring(0,1);
+        }
+        else
+        {
+            endHour = endHourText.substring(0,2);
+        }
+
+        if ( endHourText.length == 2 || endHourText.length == 3 )
+        {
+            endMin = 0;
+        }
+        else if( endHourText.length == 4 )
+        {
+            endMin = endHourText.substring(2,4);
+        }
+        else if( endHourText.length == 5 )
+        {
+            endMin = endHourText.substring(3,5);
+        }
+
+        var startDateTime = new Date(year, iMonth, day, parseInt(startHour), parseInt(startMin));
+        console.log(year);
+        console.log(iMonth);
+        console.log(day);
+        console.log(parseInt(startHour));
+        console.log(parseInt(startMin));
+        var endDateTime = new Date(year, iMonth, day, parseInt(endHour), parseInt(endMin));
+
+        var weekDay = aWeekday[startDateTime.getDay()];
+        weekDay = weekDay.charAt(0).toUpperCase() + weekDay.slice(1);
+        var day = ( startDateTime.getDate() == 1 ? '1er' : startDateTime.getDate() );
+        var month = aMonth[startDateTime.getMonth()];
+        var year = startDateTime.getFullYear();
+
+        dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+
+        newEvent = {
+            title: event.title,
+            place: event.location,
+            dateText: dateText,
+            startHourText: startHourText,
+            endHourText: endHourText,
+            frequency: 1,
+            startDateTime: startDateTime,
+            endDateTime: endDateTime,
+            createdAt: new Date() // current time
+        };
+
+        console.log(newEvent);
+
+
+        Events.insert(newEvent);
+    },
+
+    rmEvent : function(title){
+        title = title + "*";
+        event = Events.find({title:{$regex:title}}, {sort: {createdAt: -1}, limit: 1}).fetch();
+        Events.remove(event[0]._id);
     }
 });
 

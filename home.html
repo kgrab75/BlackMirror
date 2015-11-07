@@ -16,6 +16,7 @@
 
     </header>
     <div class="time">{{time}}</div>
+    <div class="time date">{{date}}</div>
     {{>simpleWeather}}
 </div>
 
@@ -138,7 +139,9 @@
     </ul>
 </div>
 
-{{msg}}
+<div class="msg {{hasmessage}}">
+    {{{message}}}
+</div>
 
 <div class="container rss">
     {{> rssT}}
