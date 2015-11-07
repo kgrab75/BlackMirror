@@ -990,7 +990,7 @@ Meteor.methods({
         var month = aMonth[startDateTime.getMonth()];
         var year = startDateTime.getFullYear();
 
-        dateText = weekDay + ' ' + day + ' ' + month + ' ' + year;
+        dateText = weekDay + ' ' + day + ' ' + month;
 
         newEvent = {
             title: event.title,
