@@ -323,7 +323,7 @@ if (Meteor.isClient) {
         var hours = (new Date().getHours() < 10 ? '0' + new Date().getHours() : new Date().getHours() );
         var minutes = (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes() );
         var time = hours + ':' + minutes;
-        var date = new Date().getDay() + ' ' + aMonth[ new Date().getMonth() ] + ' ' + new Date().getFullYear();
+        var date = new Date().getDate() + ' ' + aMonth[ new Date().getMonth() ] + ' ' + new Date().getFullYear();
         getWeather();
         Session.set("time", time);
         Session.set("date", date);
