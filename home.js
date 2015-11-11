@@ -324,10 +324,13 @@ if (Meteor.isClient) {
         var minutes = (new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes() );
         var time = hours + ':' + minutes;
         var date = new Date().getDate() + ' ' + aMonth[ new Date().getMonth() ] + ' ' + new Date().getFullYear();
-        getWeather();
         Session.set("time", time);
         Session.set("date", date);
     }, 1000);
+
+    setInterval( function(){
+        getWeather();
+    }, 600000 );
 
     // This code only runs on the client
     Template.body.helpers({
