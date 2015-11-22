@@ -97,7 +97,7 @@ if (Meteor.isClient) {
     curDate  = new Date( new Date().setHours(0, 0, 0, 0) );
     //curDate  = new Date(date.getTime() - (100 * 24 * 60 * 60 * 1000));
     curDateTemp  = new Date( new Date().setHours(0, 0, 0, 0) );
-    endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 30) );
+    endDate = new Date( curDateTemp.setDate(curDateTemp.getDate() + 7) );
 
     if (annyang) {
         // Let's define our first command. First the text we expect, and then the function it should call
@@ -115,7 +115,7 @@ if (Meteor.isClient) {
             '*title': function (title) {
                 Session.set('eventTitle', title);
 
-                Meteor.call('msg', "Quel est le lieu de l'événement ?", function(error, result){
+                Meteor.call('msg', "Titre : " + Session.get('eventTitle') + "<br>Quel est le lieu de l'événement ?", function(error, result){
                     Session.set('msg', result);
                 });
                 annyang.removeCommands();
@@ -131,10 +131,17 @@ if (Meteor.isClient) {
                 annyang.removeCommands();
                 annyang.addCommands(commands);
             },
+            'modifier le titre' : function (){
+                Meteor.call('msg', 'Quel est le titre de votre événement ?', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventTitle);
+            },
             '*location': function (location) {
                 Session.set('eventLocation', location);
 
-                Meteor.call('msg', "Quelle est la date de l'événement ?", function(error, result){
+                Meteor.call('msg', "Lieu : " + Session.get('eventLocation') + "<br>Quelle est la date de l'événement ?", function(error, result){
                     Session.set('msg', result);
                 });
                 annyang.removeCommands();
@@ -149,6 +156,13 @@ if (Meteor.isClient) {
                 });
                 annyang.removeCommands();
                 annyang.addCommands(commands);
+            },
+            'modifier le lieu' : function (){
+                Meteor.call('msg', 'Quel est le lieu de votre événement ?', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventLocation);
             },
             '(le) *date': function (date) {
                 isDay = false;
@@ -181,7 +195,7 @@ if (Meteor.isClient) {
                 if ( isDay && isMonth && isYear ) {
                     Session.set('eventDate', date);
 
-                    Meteor.call('msg', "Quelle est l'heure de début de l'événement ?", function(error, result){
+                    Meteor.call('msg', "Date : " + Session.get('eventDate') + "<br>Quelle est l'heure de début de l'événement ?", function(error, result){
                         Session.set('msg', result);
                     });
                     annyang.removeCommands();
@@ -202,14 +216,22 @@ if (Meteor.isClient) {
                 annyang.removeCommands();
                 annyang.addCommands(commands);
             },
+            'modifier la date' : function (){
+                Meteor.call('msg', 'Quel est la date de votre événement ?', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventDate);
+            },
             '(à) *starthour': function (starthour) {
 
+                if( starthour == 'Deezer' ) starthour = '10h';
                 isHour = false;
                 isMin = false;
 
                 Session.set('eventStartHour', starthour);
 
-                Meteor.call('msg', 'Quelle est l\'heure de fin de l\'événement ?', function(error, result){
+                Meteor.call('msg', "Heure de début : " + Session.get('eventStartHour') + "<br>Quelle est l\'heure de fin de l\'événement ?", function(error, result){
                     Session.set('msg', result);
                 });
                 annyang.removeCommands();
@@ -224,6 +246,13 @@ if (Meteor.isClient) {
                 });
                 annyang.removeCommands();
                 annyang.addCommands(commands);
+            },
+            'modifier l\'heure de début' : function (){
+                Meteor.call('msg', 'Quel est l\'heure de début de votre événement ?', function(error, result){
+                    Session.set('msg', result);
+                });
+                annyang.removeCommands();
+                annyang.addCommands(commandsEventStartHour);
             },
             '(à) *endhour': function (endhour) {
                 Session.set('eventEndHour', endhour);
@@ -301,6 +330,19 @@ if (Meteor.isClient) {
                 });
                 annyang.removeCommands();
                 annyang.addCommands(commandsEventTitle);
+            },
+            'allume la lumière de la chambre': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'on'
+                }, this);
+            },
+            'éteins la lumière de la chambre': function() {
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'off'
+                }, this);
             }
         };
 
@@ -327,10 +369,6 @@ if (Meteor.isClient) {
         Session.set("time", time);
         Session.set("date", date);
     }, 1000);
-
-    setInterval( function(){
-        getWeather();
-    }, 600000 );
 
     // This code only runs on the client
     Template.body.helpers({
@@ -654,7 +692,7 @@ if (Meteor.isClient) {
 
             var location = event.target.city.value;
 
-            Template.simpleWeather.rendered(location);
+            Template.simpleWeather.rendered();
 
             // Clear form
             event.target.city.value = "";
@@ -800,18 +838,22 @@ if (Meteor.isClient) {
         }, 1000);
     };
 
-    function getWeather(location) {
-        //console.log(location);
-        if(typeof location == 'undefined'){
-            location = 'Paris, FR';
-        }
-        var optionsWeather = {
-            location: location, // Paris
+    function getWeather() {
+
+        Weather.options = {
+            location: '',
+            woeid: 615702, // Paris
             unit: 'c',
             success: function (weather) {
+                console.log(weather);
                 html = '<div class="today">';
-                html += '<h2><i class="sw icon-' + weather.code + '"></i> ';
-                html += weather.temp + '&deg;' + weather.units.temp + '</h2>';
+                html += '<h2>';
+                html += '<i class="sw icon-' + weather.code + '"> </i> ';
+                html += '<span class="today-temp">' + weather.temp + '&deg;' + weather.units.temp + '</span>';
+                html += '<div class="temps">';
+                html += '<span class="low">' +  weather.low + '&deg;C</span>';
+                html += '<span class="high">' +  weather.high + '&deg;C</span>';
+                html += '</div></h2>';
                 html += '<ul>';
                 html += '<li class="currently">' + aWeather[weather.code] + '</li>';
                 html += '<li class="currently">à</li>';
@@ -836,13 +878,11 @@ if (Meteor.isClient) {
             }
         };
 
-        Weather.options = optionsWeather;
         Weather.load();
     }
-    getWeather();
 
-    Template.simpleWeather.rendered = function(location){
-        setInterval(getWeather(location), 60000);
+    Template.simpleWeather.rendered = function(){
+        setInterval(getWeather(), 600000);
     }
 
 }
@@ -1017,6 +1057,14 @@ Meteor.methods({
         title = title + "*";
         event = Events.find({title:{$regex:title}}, {sort: {createdAt: -1}, limit: 1}).fetch();
         Events.remove(event[0]._id);
+    },
+
+    domo : function( state ){
+        //http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=on
+        $.ajax({
+            type: "GET",
+            url: "http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + state
+        }, this);
     }
 });
 

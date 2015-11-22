@@ -259,7 +259,7 @@ li.event-group {
 
     }
     .false{
-        color: #000;
+        color: transparent;
         -webkit-transition: color 0.5s linear 3s;
     }
 
@@ -339,6 +339,24 @@ li.event-group {
         top: 48%;
         position: absolute;
         width: 100%;
+    }
+
+    .today-temp, .temps{
+        display: inline-block;
+    }
+    .today-temp{
+        margin-left: -40px;
+    }
+    .temps{
+        margin-left: 12px;
+    }
+    .low, .high{
+        font-size: 0.4em;
+        display: block;
+    }
+
+    i.sw{
+        font-size: 80px;
     }
 }
 
