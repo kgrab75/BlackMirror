@@ -335,14 +335,14 @@ if (Meteor.isClient) {
 
                 $.ajax({
                     type: "GET",
-                    url: "http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'on',
-                    dataType: "jsonp",
+                    url: "https://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'on',
+                    dataType: "jsonp"
                 }, this);
             },
             'éteins la lumière de la chambre': function() {
                 $.ajax({
                     type: "GET",
-                    url: "http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'off',
+                    url: "https://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'off',
                     dataType: "jsonp"
                 }, this);
             }
