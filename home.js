@@ -338,13 +338,22 @@ if (Meteor.isClient) {
                     url: "https://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'on',
                     dataType: "jsonp"
                 }, this);
+
+                Meteor.call('msg', 'Lumière de la chambre allumée', function(error, result){
+                    Session.set('msg', result);
+                });
             },
             'éteins la lumière de la chambre': function() {
+
                 $.ajax({
                     type: "GET",
                     url: "https://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'off',
                     dataType: "jsonp"
                 }, this);
+
+                Meteor.call('msg', 'Lumière de la chambre éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
             }
         };
 
