@@ -368,7 +368,7 @@ if (Meteor.isClient) {
     function set(key, value) {
         Session.set(key, value);
     }
-
+    var compteur = 0;
     setInterval(function(){
         if(new Date( new Date().setHours(0, 0, 0, 0) ).getTime() != curDate.getTime()){
             location.reload();
@@ -379,6 +379,10 @@ if (Meteor.isClient) {
         var date = new Date().getDate() + ' ' + aMonth[ new Date().getMonth() ] + ' ' + new Date().getFullYear();
         Session.set("time", time);
         Session.set("date", date);
+        if( compteur % 60 == 0 ) getWeather();
+
+        compteur++;
+
     }, 1000);
 
     // This code only runs on the client
@@ -888,12 +892,11 @@ if (Meteor.isClient) {
                 $("#weather").html('<p>' + error + '</p>');
             }
         };
-
         Weather.load();
     }
 
     Template.simpleWeather.rendered = function(){
-        setInterval(getWeather(), 600000);
+        getWeather();
     }
 
 }
