@@ -331,11 +331,35 @@ if (Meteor.isClient) {
                 annyang.removeCommands();
                 annyang.addCommands(commandsEventTitle);
             },
+            'allume la lumière du bureau': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-6&action=CHANGE_STATE&code=6&state=" + 'on',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière du bureau allumée', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'éteins la lumière du bureau': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-6&action=CHANGE_STATE&code=6&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière du bureau éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
             'allume la lumière de la chambre': function() {
 
                 $.ajax({
                     type: "GET",
-                    url: "https://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'on',
+                    url: "http://192.168.1.15/action.php?engine=id-1&action=CHANGE_STATE&code=1&state=" + 'on',
                     dataType: "jsonp"
                 }, this);
 
@@ -347,11 +371,131 @@ if (Meteor.isClient) {
 
                 $.ajax({
                     type: "GET",
-                    url: "https://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + 'off',
+                    url: "http://192.168.1.15/action.php?engine=id-1&action=CHANGE_STATE&code=1&state=" + 'off',
                     dataType: "jsonp"
                 }, this);
 
                 Meteor.call('msg', 'Lumière de la chambre éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'allume la lumière de la cuisine': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-3&action=CHANGE_STATE&code=3&state=" + 'on',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière de la cuisine allumée', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'éteins la lumière de la cuisine': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-3&action=CHANGE_STATE&code=3&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière de la cuisine éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'allume la lumière de la salle de bain': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-4&action=CHANGE_STATE&code=4&state=" + 'on',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière de la salle de bain allumée', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'éteins la lumière de la salle de bain': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-4&action=CHANGE_STATE&code=4&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière de la salle de bain éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'allume la lumière du salon': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-2&action=CHANGE_STATE&code=2&state=" + 'on',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière du salon allumée', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'éteins la lumière du salon': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-2&action=CHANGE_STATE&code=2&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière du salon éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'allume la lumière des toillettes': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-5&action=CHANGE_STATE&code=5&state=" + 'on',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière des toillettes allumée', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'éteins la lumière des toillettes': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-5&action=CHANGE_STATE&code=5&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Lumière des toillettes éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'allume toutes les lumières': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-7&action=CHANGE_STATE&code=-1&state=" + 'on',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Toutes les lumières sont allumées', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'éteins toutes les lumières': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-7&action=CHANGE_STATE&code=-1&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Toutes les lumières sont éteintes', function(error, result){
                     Session.set('msg', result);
                 });
             }
@@ -1074,10 +1218,10 @@ Meteor.methods({
     },
 
     domo : function( state ){
-        //http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=on
+        //http://192.168.1.15/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=on
         $.ajax({
             type: "GET",
-            url: "http://192.168.1.18/action.php?engine=id-14&action=CHANGE_STATE&code=123456&state=" + state
+            url: "http://192.168.1.15/action.php?engine=id-1&action=CHANGE_STATE&code=1&state=" + state
         }, this);
     }
 });
