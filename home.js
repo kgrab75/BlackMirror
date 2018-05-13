@@ -487,7 +487,7 @@ if (Meteor.isClient) {
                     Session.set('msg', result);
                 });
             },
-            'éteins toutes les lumières': function() {
+            'éteint toutes les lumières': function() {
 
                 $.ajax({
                     type: "GET",
@@ -496,6 +496,19 @@ if (Meteor.isClient) {
                 }, this);
 
                 Meteor.call('msg', 'Toutes les lumières sont éteintes', function(error, result){
+                    Session.set('msg', result);
+                });
+            }
+            ,
+            'au revoir': function() {
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-7&action=CHANGE_STATE&code=-1&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'A plus !', function(error, result){
                     Session.set('msg', result);
                 });
             }
