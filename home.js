@@ -451,7 +451,7 @@ if (Meteor.isClient) {
                     Session.set('msg', result);
                 });
             },
-            'allume la lumière des toillettes': function() {
+            'allume la lumière des toilettes': function() {
 
                 $.ajax({
                     type: "GET",
@@ -459,11 +459,11 @@ if (Meteor.isClient) {
                     dataType: "jsonp"
                 }, this);
 
-                Meteor.call('msg', 'Lumière des toillettes allumée', function(error, result){
+                Meteor.call('msg', 'Lumière des toilettes allumée', function(error, result){
                     Session.set('msg', result);
                 });
             },
-            'éteins la lumière des toillettes': function() {
+            'éteins la lumière des toilettes': function() {
 
                 $.ajax({
                     type: "GET",
@@ -471,7 +471,7 @@ if (Meteor.isClient) {
                     dataType: "jsonp"
                 }, this);
 
-                Meteor.call('msg', 'Lumière des toillettes éteinte', function(error, result){
+                Meteor.call('msg', 'Lumière des toilettes éteinte', function(error, result){
                     Session.set('msg', result);
                 });
             },
@@ -498,8 +498,7 @@ if (Meteor.isClient) {
                 Meteor.call('msg', 'Toutes les lumières sont éteintes', function(error, result){
                     Session.set('msg', result);
                 });
-            }
-            ,
+            },
             'au revoir': function() {
 
                 $.ajax({
@@ -509,6 +508,30 @@ if (Meteor.isClient) {
                 }, this);
 
                 Meteor.call('msg', 'A plus !', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'ambiance aurore boréale': function() {
+
+                $.ajax({
+                    type: "PUT",
+                    url: "http://192.168.1.10/api/RHaihPimbjyYgvFwBOBw-Ji-RI9K9WmrdPT34RgK/groups/1/action",
+                    data: '{"scene": "mxqYrtaaH3hXOJU"}'
+                }, this);
+
+                Meteor.call('msg', 'Aurores boréales', function(error, result){
+                    Session.set('msg', result);
+                });
+            },
+            'ambiance tropical': function() {
+
+                $.ajax({
+                    type: "PUT",
+                    url: "http://192.168.1.10/api/RHaihPimbjyYgvFwBOBw-Ji-RI9K9WmrdPT34RgK/groups/1/action",
+                    data: '{"scene": "qxdC7eSDZeP5bO-"}'
+                }, this);
+
+                Meteor.call('msg', 'Tropical', function(error, result){
                     Session.set('msg', result);
                 });
             }
