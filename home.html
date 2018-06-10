@@ -6,12 +6,25 @@
 </head>
 
 <body>
+<script>
+    (function( d, s, id ) {
+        var js, djs = d.getElementsByTagName( s )[ 0 ];
+        if ( d.getElementById( id ) ) return;
+        js = d.createElement( s );
+        js.id = id;
+        js.src = "https://e-cdns-files.dzcdn.net/js/widget/loader.js";
+        djs.parentNode.insertBefore( js, djs );
+    }( document, "script", "deezer-widget-loader" ));</script>
+
+<div class="deezer-widget-player"
+     data-src="https://www.deezer.com/plugins/player?format=square&autoplay=true&playlist=false&width=500&height=500&color=007FEB&layout=&size=small&type=playlist&id=1950632062"
+     data-scrolling="no" data-frameborder="0" data-allowTransparency="true" data-width="500" data-height="500"></div>
 
 <div class="container weather">
     <header>
 
         <form class="new-city mobile-only">
-            <input type="text" name="city" placeholder=" + Nouvelle ville" />
+            <input type="text" name="city" placeholder=" + Nouvelle ville"/>
         </form>
 
     </header>
@@ -24,26 +37,26 @@
     <header>
 
         <form class="new-shop mobile-only">
-            <input type="text" name="text" placeholder=" + Nouvelle course" />
+            <input type="text" name="text" placeholder=" + Nouvelle course"/>
         </form>
 
     </header>
 
     <ul>
         {{#if noShops}}
-            <li>
-                <span class="text">Aucune course à faire</span>
-            </li>
+        <li>
+            <span class="text">Aucune course à faire</span>
+        </li>
         {{/if}}
 
         {{#each shops}}
-            {{> shop}}
+        {{> shop}}
         {{/each}}
 
         {{#if tooManyShops}}
-            <li>
-                <span class="text">...</span>
-            </li>
+        <li>
+            <span class="text">...</span>
+        </li>
         {{/if}}
     </ul>
 </div>
@@ -54,25 +67,25 @@
 
         <form class="new-event hide mobile-only">
             <label>Titre</label>
-            <input type="text" name="title" placeholder="Titre" />
+            <input type="text" name="title" placeholder="Titre"/>
 
             <label>Lieu</label>
-            <input type="text" name="place" placeholder="Lieu" />
+            <input type="text" name="place" placeholder="Lieu"/>
 
             <label>Date</label>
             <select class="day" name="day">
                 {{#each days}}
-                    {{> day}}
+                {{> day}}
                 {{/each}}
             </select>
             <select class="month" name="month">
                 {{#each months}}
-                    {{> month}}
+                {{> month}}
                 {{/each}}
             </select>
             <select class="year" name="year">
                 {{#each years}}
-                    {{> year}}
+                {{> year}}
                 {{/each}}
             </select>
 
@@ -80,13 +93,13 @@
                 <label>Heure de début</label>
                 <select class="starthour" name="starthour">
                     {{#each hours}}
-                        {{> hour}}
+                    {{> hour}}
                     {{/each}}
                 </select>
                 <span class="hour-separator">:</span>
                 <select class="startmin" name="startmin">
                     {{#each mins}}
-                        {{> min}}
+                    {{> min}}
                     {{/each}}
                 </select>
             </div>
@@ -95,13 +108,13 @@
                 <label>Heure de fin</label>
                 <select class="endhour" name="endhour">
                     {{#each hours}}
-                        {{> hour}}
+                    {{> hour}}
                     {{/each}}
                 </select>
                 <span class="hour-separator">:</span>
                 <select class="endmin" name="endmin">
                     {{#each mins}}
-                        {{> min}}
+                    {{> min}}
                     {{/each}}
                 </select>
             </div>
@@ -124,17 +137,17 @@
     </header>
     <ul>
         {{#if noEvents}}
-            <li>
-                <span class="text">Aucun événement à venir</span>
-            </li>
+        <li>
+            <span class="text">Aucun événement à venir</span>
+        </li>
         {{/if}}
         {{#each events}}
-            {{> event}}
+        {{> event}}
         {{/each}}
         {{#if tooManyEvents}}
-            <li>
-                <span class="text">...</span>
-            </li>
+        <li>
+            <span class="text">...</span>
+        </li>
         {{/if}}
     </ul>
 </div>
@@ -153,7 +166,7 @@
 <template name="rssT">
     <div id="carousel">
         {{#each rss}}
-            <div><a class="rss-link" href="{{link}}" target="_blank">{{title}}</a></div>
+        <div><a class="rss-link" href="{{link}}" target="_blank">{{title}}</a></div>
         {{/each}}
     </div>
 </template>
@@ -162,7 +175,7 @@
     <li class="{{#if checked}}checked{{/if}}">
         <button class="delete mobile-only">&times;</button>
 
-        <input type="checkbox" checked="{{checked}}" class="toggle-checked  mobile-only" />
+        <input type="checkbox" checked="{{checked}}" class="toggle-checked  mobile-only"/>
 
         <span class="text">{{text}}</span>
     </li>
@@ -173,18 +186,18 @@
         <span class="date">{{#each sums}}{{sum}}{{/each}}</span>
 
         {{#each groupItems}}
-            <button class="delete mobile-only">&times;</button>
-            <div class="event">
-                <div class="row1">
-                    <div class="starttime">{{startHourText}}</div>
-                    <div class="title">{{title}}</div>
-                </div>
-
-                <div class="row2">
-                    <div class="endtime">{{endHourText}}</div>
-                    <div class="place">{{place}}</div>
-                </div>
+        <button class="delete mobile-only">&times;</button>
+        <div class="event">
+            <div class="row1">
+                <div class="starttime">{{startHourText}}</div>
+                <div class="title">{{title}}</div>
             </div>
+
+            <div class="row2">
+                <div class="endtime">{{endHourText}}</div>
+                <div class="place">{{place}}</div>
+            </div>
+        </div>
         {{/each}}
     </li>
 </template>

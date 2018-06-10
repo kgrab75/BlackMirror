@@ -514,6 +514,12 @@ if (Meteor.isClient) {
             'ambiance aurore boréale': function() {
 
                 $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-7&action=CHANGE_STATE&code=-1&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                $.ajax({
                     type: "PUT",
                     url: "http://192.168.1.10/api/RHaihPimbjyYgvFwBOBw-Ji-RI9K9WmrdPT34RgK/groups/1/action",
                     data: '{"scene": "mxqYrtaaH3hXOJU"}'
@@ -526,10 +532,18 @@ if (Meteor.isClient) {
             'ambiance tropical': function() {
 
                 $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-7&action=CHANGE_STATE&code=-1&state=" + 'off',
+                    dataType: "jsonp"
+                }, this);
+
+                $.ajax({
                     type: "PUT",
                     url: "http://192.168.1.10/api/RHaihPimbjyYgvFwBOBw-Ji-RI9K9WmrdPT34RgK/groups/1/action",
                     data: '{"scene": "qxdC7eSDZeP5bO-"}'
                 }, this);
+
+                $( '#widget-play-pause' ).click();
 
                 Meteor.call('msg', 'Tropical', function(error, result){
                     Session.set('msg', result);
@@ -1265,6 +1279,6 @@ Meteor.methods({
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
-	SSL('/meteor/blackMirror/private/server.key','/meteor/blackMirror/private/server.crt', 443);
+	SSL('C:/wamp/www/BlackMirror/private/server.key','C:/wamp/www/BlackMirror/private/server.crt', 443);
   });
 }
