@@ -1279,6 +1279,6 @@ Meteor.methods({
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
-	SSL('C:/wamp/www/BlackMirror/private/server.key','C:/wamp/www/BlackMirror/private/server.crt', 443);
+	SSL('C:/meteor/blackMirror/private/server.key','C:/meteor/blackMirror/private/server.crt', 443);
   });
 }
