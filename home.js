@@ -511,7 +511,7 @@ if (Meteor.isClient) {
                     Session.set('msg', result);
                 });
             },
-            'ambiance aurore boréale': function() {
+            'ambiance bougie': function() {
 
                 $.ajax({
                     type: "GET",
@@ -522,10 +522,10 @@ if (Meteor.isClient) {
                 $.ajax({
                     type: "PUT",
                     url: "http://192.168.1.10/api/owA6lFMvjwWeulELeGNbsi5wfD9VQ6RhDhJJPpHc/groups/1/action",
-                    data: '{"scene": "mxqYrtaaH3hXOJU"}'
+                    data: '{"scene": "Ttrbc5vwBgOeRab"}'
                 }, this);
 
-                Meteor.call('msg', 'Aurores boréales', function(error, result){
+                Meteor.call('msg', 'Bougie', function(error, result){
                     Session.set('msg', result);
                 });
             },
@@ -540,7 +540,7 @@ if (Meteor.isClient) {
                 $.ajax({
                     type: "PUT",
                     url: "http://192.168.1.10/api/owA6lFMvjwWeulELeGNbsi5wfD9VQ6RhDhJJPpHc/groups/1/action",
-                    data: '{"scene": "aaebnAsWeE6aK2R-"}'
+                    data: '{"scene": "aaebnAsWeE6aK2R"}'
                 }, this);
 
                 Meteor.call('msg', 'Tropical', function(error, result){
@@ -553,6 +553,10 @@ if (Meteor.isClient) {
                     url: "http://192.168.1.10/api/owA6lFMvjwWeulELeGNbsi5wfD9VQ6RhDhJJPpHc/lights/1/state",
                     data: '{"on":false}'
                 }, this);
+
+                Meteor.call('msg', 'Lumlière d\'ambiance éteinte', function(error, result){
+                    Session.set('msg', result);
+                });
             }
         };
 
