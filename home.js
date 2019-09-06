@@ -521,7 +521,7 @@ if (Meteor.isClient) {
 
                 $.ajax({
                     type: "PUT",
-                    url: "http://192.168.1.10/api/RHaihPimbjyYgvFwBOBw-Ji-RI9K9WmrdPT34RgK/groups/1/action",
+                    url: "http://192.168.1.10/api/owA6lFMvjwWeulELeGNbsi5wfD9VQ6RhDhJJPpHc/groups/1/action",
                     data: '{"scene": "mxqYrtaaH3hXOJU"}'
                 }, this);
 
@@ -539,15 +539,20 @@ if (Meteor.isClient) {
 
                 $.ajax({
                     type: "PUT",
-                    url: "http://192.168.1.10/api/RHaihPimbjyYgvFwBOBw-Ji-RI9K9WmrdPT34RgK/groups/1/action",
-                    data: '{"scene": "qxdC7eSDZeP5bO-"}'
+                    url: "http://192.168.1.10/api/owA6lFMvjwWeulELeGNbsi5wfD9VQ6RhDhJJPpHc/groups/1/action",
+                    data: '{"scene": "aaebnAsWeE6aK2R-"}'
                 }, this);
-
-                $( '#widget-play-pause' ).click();
 
                 Meteor.call('msg', 'Tropical', function(error, result){
                     Session.set('msg', result);
                 });
+            },
+            'éteint la lumière d\'ambiance': function() {
+                $.ajax({
+                    type: "PUT",
+                    url: "http://192.168.1.10/api/owA6lFMvjwWeulELeGNbsi5wfD9VQ6RhDhJJPpHc/lights/1/state",
+                    data: '{"on":false}'
+                }, this);
             }
         };
 
