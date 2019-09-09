@@ -557,6 +557,17 @@ if (Meteor.isClient) {
                 Meteor.call('msg', 'Lumlière d\'ambiance éteinte', function(error, result){
                     Session.set('msg', result);
                 });
+            },
+            'store chambre': function() {
+                $.ajax({
+                    type: "GET",
+                    url: "http://192.168.1.15/action.php?engine=id-5&action=STORE&code=8",
+                    dataType: "jsonp"
+                }, this);
+
+                Meteor.call('msg', 'Store chambre', function(error, result){
+                    Session.set('msg', result);
+                });
             }
         };
 
